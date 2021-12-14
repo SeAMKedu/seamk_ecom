@@ -1,0 +1,131 @@
+<odoo>
+  <data>
+    <!--Add a custom JavaScript file-->
+    <template id="assets_frontend" name="frontend" inherit_id="web.assets_frontend">
+      <xpath expr="." position="inside">
+        <script type="text/javascript" src="/seamk_ecom/static/js/fea.js"></script>
+      </xpath>
+    </template>
+
+    <!--Layout of the extra page-->
+    <template id="extra">
+      <t t-call="website.layout">
+        <div class="wrap">
+          <div class="container oe_website_sale py2">
+            <h1 class="mb32">Finite Element Analysis (FEA)</h1>
+            <!--Form for the customer to set the input parameters of the FEA-->
+            <form action="/shop/extra" method="post" class="checkout_autoformat">
+              <!--Get the sale order data-->
+              <t t-set="website_sale_order" t-value="website.sale_get_order()"></t>
+              <!--Loop the sale order lines-->
+              <div t-foreach="website_sale_order.website_order_line" t-as="line">
+                <!--Finite Element Anysis is performed only for the product named 'Support'-->
+                <t t-if="line.product_id.name=='Support'">
+                  <div class="row">
+
+                    <!--Product image of the support-->
+                    <div class="col-md-6">
+                      <span t-field="line.product_id.image_512"  t-options="{'widget': 'image'}"></span>
+                    </div>
+
+                    <!--Set the input parameters of the FEA-->
+                    <div class="col-md-6">
+                      <h3 class="mb16">Input Parameters</h3>
+
+                      <div class="form-group input-group">
+                        <div class="input-group-prepend">
+                          <span class="input-group-text">Distance D1 (50-120 mm)</span>
+                        </div>
+                        <input type="number" class="form-control" id="input-d1" name="d1" min="50" max="120" value="50" step="5"/>
+                      </div>
+
+                      <div class="form-group input-group">
+                        <div class="input-group-prepend">
+                          <span class="input-group-text">Distance D2 (50-120 mm)</span>
+                        </div>
+                        <input type="number" class="form-control" id="input-d2" name="d2" min="50" max="120" value="50" step="5"/>
+                      </div>
+
+                      <div class="form-group input-group">
+                        <div class="input-group-prepend">
+                          <span class="input-group-text">Distance D3 (50-120 mm)</span>
+                        </div>
+                        <input type="number" class="form-control" id="input-d3" name="d3" min="50" max="120" value="50" step="5"/>
+                      </div>
+
+                      <div class="form-group input-group">
+                        <div class="input-group-prepend">
+                          <span class="input-group-text">Force F (10-1000 N)</span>
+                        </div>
+                        <input type="number" class="form-control" id="input-f" name="f" min="10" max="1000" value="10" step="10"/>
+                      </div>
+
+                      <!--Button for posting the input parameters of the FEA-->
+                      <button id="btn-post" class="btn btn-primary btn-lg" type="button" onclick="postFEA()">
+                        <span>Optimize the Geometry</span>
+                      </button>
+                      <!--If there is an error in the input parameters, show it here-->
+                      <p id="fea-info"></p>
+                    </div>
+                  </div>
+
+                  <div class="row">
+                    <!--Show the optimized geometry of the support-->
+                    <div class="col-md-6">
+                      <h3>Geometry of the Support</h3>
+                      <img id="img-support" class="img-fluid" hidden="true"/>
+                      <input type="text" id="input-img" name="imgdata" hidden="true"/>
+                      <div id="spinner" hidden="true">
+                        <div class="spinner-border text-dark"></div>
+                        <span>Optimizing the geometry, please wait...</span>
+                      </div>
+                      <div class="mb16"></div>
+                    </div>
+
+                    <!--Results of the FEA-->
+                    <div class="col-md-6">
+                      <h3 class="mb16">Results</h3>
+
+                      <div class="form-group input-group">
+                        <div class="input-group-prepend">
+                          <span class="input-group-text">Radius R1 (m)</span>
+                        </div>
+                        <input type="text" class="form-control" id="input-r1" name="r1" value="0"/>
+                      </div>
+
+                      <div class="form-group input-group">
+                        <div class="input-group-prepend">
+                          <span class="input-group-text">Radius R2 (m)</span>
+                        </div>
+                        <input type="text" class="form-control" id="input-r2" name="r2" value="0"/>
+                      </div>
+
+                      <div class="form-group input-group">
+                        <div class="input-group-prepend">
+                          <span class="input-group-text">Area A (m^2)</span>
+                        </div>
+                        <input type="text" class="form-control" id="input-area" name="area" value="0"/>
+                      </div>
+
+                      <div class="form-group input-group">
+                        <div class="input-group-prepend">
+                          <span class="input-group-text">Stress</span>
+                        </div>
+                        <input type="text" class="form-control" id="input-stress" name="stress" value="0"/>
+                      </div>
+                    </div>
+                  </div>
+                </t>
+              </div>
+              <!--Post the form data to the controller-->
+              <button type="submit" class="btn btn-primary a-submit float-right" id="button-next" style="margin-top: 10px; margin-bottom: 20px;">
+                  <span>Next</span>
+                  <i class="fa fa-chevron-right"/>
+              </button>
+            </form>
+          </div>
+        </div>
+      </t>
+    </template>
+  </data>
+</odoo>
