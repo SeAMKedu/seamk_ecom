@@ -8,7 +8,7 @@ If the shopping cart contains a product called 'Support', the module extends the
 
 The module also fetches the geometry of the support as a PNG image file. A third request to the API returns the geometry of the support as a binary data which is stored to the custom field 'x_fea_image' of the sale order record.
 
-## Additional Information
+## Acknowledgment
 
 This module was developed as a part of the Enterprise Digital Twin Platform (EDIT) project, which is funded by Pirkanmaan liitto and EAKR.
 
